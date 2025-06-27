@@ -11,11 +11,6 @@ ASTRA_DB_APPLICATION_TOKEN = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
 ASTRA_DB_KEYSPACE = os.getenv("ASTRA_DB_KEYSPACE")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-
-# OPENAI_API_KEY = "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"
-
-
 class ingest_data:
     def __init__(self):
         print("Data Ingestion Class Initialized...!")
