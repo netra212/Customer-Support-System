@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from config.config_loader import load_config
+from utils.config_loader import load_config
 import os
 from langchain.embeddings import SentenceTransformerEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -10,17 +10,17 @@ class ModelLoader:
     
     def __init__(self):
         load_dotenv()
-        self.__validate_env()
+        # self.__validate_env()
         self.config = load_config()
     
-    def _validate_env(self):
-        """
-        Validate necessary environment variables
-        """
-        required_vars = ["GOOGLE_API_KEY"] 
-        missing_vars = [var for var in required_vars if not os.getenv(var)]
-        if missing_vars:
-            raise EnvironmentError(f"Missing environment variables: {missing_vars}")
+    # def _validate_env(self):
+    #     """
+    #     Validate necessary environment variables
+    #     """
+    #     required_vars = ["GOOGLE_API_KEY"] 
+    #     missing_vars = [var for var in required_vars if not os.getenv(var)]
+    #     if missing_vars:
+    #         raise EnvironmentError(f"Missing environment variables: {missing_vars}")
         
     def load_embedding(self):
         """

@@ -5,19 +5,23 @@ from typing import List, Tuple
 from langchain_core.documents import Document
 from langchain_astradb import AstraDBVectorStore
 from utils.model_loader import ModelLoader
-from config.config_loader import load_config
+from utils.config_loader import load_config
 
 class DataIngestion:
     """
-    Class to handle data transformation and ingestion into AstraDB vector store. 
+    Class to handle data transformation and ingestion into AstraDB vector store.
     """
-    
+
     def __init__(self):
-        self.model_loader = ModelLoader()
+        """
+        Initialize environment variables, embedding model, and set CSV file path.
+        """
+        print("Initializing DataIngestion pipeline...")
+        self.model_loader=ModelLoader()
         self._load_env_variables()
         self.csv_path = self._get_csv_path()
         self.product_data = self._load_csv()
-        self.config = load_config()
+        self.config=load_config()
 
     def _load_env_variables(self):
         """
@@ -25,7 +29,8 @@ class DataIngestion:
         """
         load_dotenv()
         
-        required_vars = ["GOOGLE_API_KEY", "ASTRA_DB_API_ENDPOINT", "ASTRA_DB_APPLICATION_TOKEN", "ASTRA_DB_KEYSPACE"]
+        # "GOOGLE_API_KEY",
+        required_vars = ["ASTRA_DB_API_ENDPOINT", "ASTRA_DB_APPLICATION_TOKEN", "ASTRA_DB_KEYSPACE"]
         
         missing_vars = [var for var in required_vars if os.getenv(var) is None]
         if missing_vars:
@@ -35,6 +40,8 @@ class DataIngestion:
         self.db_api_endpoint = os.getenv("ASTRA_DB_API_ENDPOINT")
         self.db_application_token = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
         self.db_keyspace = os.getenv("ASTRA_DB_KEYSPACE")
+
+       
 
     def _get_csv_path(self):
         """
@@ -47,7 +54,7 @@ class DataIngestion:
             raise FileNotFoundError(f"CSV file not found at: {csv_path}")
 
         return csv_path
-    
+
     def _load_csv(self):
         """
         Load product data from CSV.
@@ -92,14 +99,13 @@ class DataIngestion:
         """
         Store documents into AstraDB vector store.
         """
-        collection_name = self.config["astra_db"]["collection_name"]
-
+        collection_name=self.config["astra_db"]["collection_name"]
         vstore = AstraDBVectorStore(
-            embedding = self.model_loader.load_embeddings(),
-            collection_name = collection_name,
-            api_endpoint = self.db_api_endpoint,
-            token = self.db_application_token,
-            namespace = self.db_keyspace,
+            embedding= self.model_loader.load_embedding(),
+            collection_name=collection_name,
+            api_endpoint=self.db_api_endpoint,
+            token=self.db_application_token,
+            namespace=self.db_keyspace,
         )
 
         inserted_ids = vstore.add_documents(documents)
